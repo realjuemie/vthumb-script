@@ -4,7 +4,7 @@ set -e
 # 自动安装 Homebrew（如果不存在）
 if ! command -v brew >/dev/null 2>&1; then
   echo "检测到 Homebrew 未安装，开始安装..."
-  /bin/bash -c "$(curl -fsSL https://brew.sh/install.sh)"
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   # 配置 PATH（Intel 和 Apple Silicon 兼容）
   if [ -f /opt/homebrew/bin/brew ]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
