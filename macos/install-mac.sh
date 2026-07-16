@@ -16,8 +16,8 @@ fi
 # 确保 brew 可用
 command -v brew >/dev/null || { echo "Homebrew 安装失败"; exit 1; }
 
-# 清理之前中断安装残留的锁文件
-rm -f "$HOME/Library/Caches/Homebrew/downloads/"*.incomplete 2>/dev/null
+# 清理之前中断安装残留的锁文件（(N) = zsh null glob，无匹配时不报错）
+rm -f "$HOME/Library/Caches/Homebrew/downloads/"*.incomplete(N) 2>/dev/null
 
 brew list ffmpeg >/dev/null 2>&1 || brew install ffmpeg
 brew list python >/dev/null 2>&1 || brew install python
