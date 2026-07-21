@@ -31,6 +31,16 @@ function Format-Size([long]$bytes) {
     return "{0:N2}MB({1:N0} bytes)" -f $mb, $bytes
 }
 
+function Get-SampleTime([double]$duration, [int]$index, [int]$count) {
+    $defaultTime = ($duration * $index) / ($count + 1)
+    if ($index -ne 1) { return $defaultTime }
+
+    # Move the first thumbnail earlier on long videos, but avoid the very first
+    # frames where black leaders and fades are common.
+    $earlyTime = [Math]::Max($duration * 0.02, [Math]::Min(3.0, $duration * 0.1))
+    return [Math]::Min($defaultTime, $earlyTime)
+}
+
 function Invoke-Process($exe, [string[]]$arguments) {
     & $exe @arguments
     if ($LASTEXITCODE -ne 0) {
@@ -249,7 +259,7 @@ foreach ($video in $videos) {
         $times = New-Object System.Collections.Generic.List[double]
         $frames = New-Object System.Collections.Generic.List[string]
         for ($i = 1; $i -le $Count; $i++) {
-            $t = ($meta.Duration * $i) / ($Count + 1)
+            $t = Get-SampleTime $meta.Duration $i $Count
             $times.Add($t)
             $frame = Join-Path $tmp ("frame_{0:000}.jpg" -f $i)
             $args = @(
